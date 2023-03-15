@@ -12,23 +12,63 @@ namespace LoggingKata
 
         static void Main(string[] args)
         {
-            // TODO:  Find the two Taco Bells that are the furthest from one another.
-            // HINT:  You'll need two nested forloops ---------------------------
+           
 
             logger.LogInfo("Log initialized");
 
-            // use File.ReadAllLines(path) to grab all the lines from your csv file
-            // Log and error if you get 0 lines and a warning if you get 1 line
+          
             var lines = File.ReadAllLines(csvPath);
-
+            if (lines.ToArray().Length == 0)
+            {
+                logger.LogError("No lines detected");
+            }
+            else if(lines.ToArray().Length == 1)
+            {
+                logger.LogWarning("Only 1 line detected.");
+            }
+            
             logger.LogInfo($"Lines: {lines[0]}");
-
-            // Create a new instance of your TacoParser class
+            
+            
             var parser = new TacoParser();
-
-            // Grab an IEnumerable of locations using the Select command: var locations = lines.Select(parser.Parse);
+            logger.LogInfo("Lines being written to an array");
+           
             var locations = lines.Select(parser.Parse).ToArray();
 
+          
+            ITrackable tacoBellOne = null;
+            ITrackable tacoBellTwo = null;
+            double distance = 0;
+            
+
+               
+            foreach(var locationA in locations)
+            {
+                var coordinateA = new GeoCoordinate() { Latitude = locationA.Location.Latitude, Longitude = locationA.Location.Longitude };
+                foreach(var locationB in locations)
+                {
+                    var coordinateB = new GeoCoordinate() { Latitude = locationB.Location.Latitude, Longitude = locationB.Location.Longitude};
+                    double checkDistance = coordinateB.GetDistanceTo(coordinateA);
+                    if(checkDistance > distance)
+                    {
+                        distance = checkDistance;
+                        tacoBellOne = locationA;
+                        tacoBellTwo = locationB;
+                    }
+                }
+            }
+            logger.LogInfo($"{tacoBellOne.Name} and {tacoBellTwo.Name} ahave the most distance between them.");
+        }
+    }
+} 
+
+            // TODO:  Find the two Taco Bells that are the furthest from one another.
+            // HINT:  You'll need two nested forloops ---------------------------
+            // use File.ReadAllLines(path) to grab all the lines from your csv file
+            // Log and error if you get 0 lines and a warning if you get 1 line
+
+            // Create a new instance of your TacoParser class
+            // Grab an IEnumerable of locations using the Select command: var locations = lines.Select(parser.Parse);
             // DON'T FORGET TO LOG YOUR STEPS
 
             // Now that your Parse method is completed, START BELOW ----------
@@ -37,10 +77,9 @@ namespace LoggingKata
             // Create a `double` variable to store the distance
 
             // Include the Geolocation toolbox, so you can compare locations: `using GeoCoordinatePortable;`
-
             //HINT NESTED LOOPS SECTION---------------------
-            // Do a loop for your locations to grab each location as the origin (perhaps: `locA`)
-
+            // Do a loop for your locations to grab each location as the origin (perhaps: `locA`)       
+            
             // Create a new corA Coordinate with your locA's lat and long
 
             // Now, do another loop on the locations with the scope of your first loop, so you can grab the "destination" location (perhaps: `locB`)
@@ -54,6 +93,4 @@ namespace LoggingKata
 
 
             
-        }
-    }
-}
+   
