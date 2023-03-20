@@ -57,7 +57,7 @@ namespace LoggingKata
                     }
                 }
             }
-            logger.LogInfo($"{tacoBellOne.Name} and {tacoBellTwo.Name} have the most distance between them.");
+            logger.LogInfo($"{tacoBellOne.Name} and {tacoBellTwo.Name} have the most distance between them. The distance is {distance}.");
         }
     }
 } 
